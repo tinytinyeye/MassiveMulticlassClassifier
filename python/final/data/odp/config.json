@@ -1,0 +1,6 @@
+{
+    "num_classes" : 105033,
+    "num_features" : 422713,
+    "train_file" : "./tfrecords/train.tfrecords",
+    "test_file" : "./tfrecords/train.tfrecords"
+}
