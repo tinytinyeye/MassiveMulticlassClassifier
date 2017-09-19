@@ -11,7 +11,7 @@ def get_meta(filename):
     obtain number of samples. features and classes from given input file
 
     parameters:
-    filename - input dataset, in the format of .vw
+    filename - input dataset, in the format of .vw.gz
 
     returns:
     num_points - number of samples in the dataset
@@ -21,7 +21,9 @@ def get_meta(filename):
     num_points = 0
     label_dict = {}
     feature_dict = {}
+    # max_feature = 0
     with open(filename, 'r') as f:
+        # lines = [x.decode('utf8').strip() for x in f.readlines()]
         for line in f:
             line = line.strip()
             num_points += 1
@@ -36,6 +38,8 @@ def get_meta(filename):
             for i in range(len(features)):
                 feature = features[i].split(':')[0]
                 feature_dict[int(feature)] = 1
+                # if int(feature) > max_feature:
+                #     max_feature = int(feature)
     sorted_label = sorted(label_dict.keys())
     sorted_feature = sorted(feature_dict.keys())
 
@@ -64,6 +68,7 @@ def save_to_tfrecords_sparse(filename, save_path):
     writer = tf.python_io.TFRecordWriter(save_path)
     num_points = 0
     with open(filename, 'r') as f:
+        # lines = [x.decode('utf8').strip() for x in f.readlines()]
         for line in f:
             line = line.strip()
             data = line.split('|')
@@ -95,13 +100,6 @@ def save_to_tfrecords_sparse(filename, save_path):
                 print('%d lines done' % num_points)
 
 def save_to_tfrecords_dense(filename, save_path):
-    """
-    save dataset to tfrecord, with format (label, features)
-
-    parameters:
-    filename - input dataset, in the format of .vw.gz
-    save_path - the path you save tfrecords to
-    """
     _float_feature = lambda v: tf.train.Feature(float_list=tf.train.FloatList(value=v))
     _int_feature = lambda v: tf.train.Feature(int64_list=tf.train.Int64List(value=v))
     writer = tf.python_io.TFRecordWriter(save_path)

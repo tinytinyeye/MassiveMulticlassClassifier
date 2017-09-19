@@ -36,10 +36,10 @@ def main():
                           save_path=None,
                           load_hash=False
                           )
-    clf.train("./data/tfrecords/train.tfrecords", gpu_option=gpu_option,
+    clf.train("/home/frankie/ltcb/data/tfrecords/b20/train.tfrecords", gpu_option=gpu_option,
                                                          num_epochs=NUM_EPOCH,
                                                         start=start, end=end)
-    clf.evaluate("./data/tfrecords/test.tfrecords", gpu_option=gpu_option)
+    clf.evaluate("/home/frankie/ltcb/data/tfrecords/b20/test.tfrecords", gpu_option=gpu_option)
     sys.exit()
 
 if __name__ == '__main__':

@@ -258,7 +258,8 @@ class MultiClassifier(object):
             coord = tf.train.Coordinator()
             threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-            log = open('./time.out', 'a')
+            path = "./" + "_".join((self.tag, str(self.B), str(self.R), "time")) + ".out"
+            log = open(path, 'a')
             train_timer = util.Timer()
             try:
               step = 0
@@ -288,7 +289,7 @@ class MultiClassifier(object):
             finally:
                 coord.request_stop()
 
-            log.write("B={} R={} time={}\n".format(self.B, self.R,
+            log.write("TRAIN B={} R={} time={}\n".format(self.B, self.R,
                                                     train_timer.elapsed()))
             log.close()
             ret_weight = sess.run(W)
@@ -317,6 +318,9 @@ class MultiClassifier(object):
         # TODO add a line of code to stack labels to create y_test, store in classifier
         graph = tf.Graph()
         probs = []
+        path = "./" + "_".join((self.tag, str(self.B), str(self.R), "time")) + ".out"
+        log = open(path, 'a')
+        predict_timer = util.Timer()
         with graph.as_default():
             # build input pipeline
             labels, indices, values = self.load_sparse(filename, graph)
@@ -328,10 +332,6 @@ class MultiClassifier(object):
             y_p = tf.nn.softmax(matmul(X, W) + b)
             init_op = tf.group(tf.global_variables_initializer(),
                                tf.local_variables_initializer())
-            # sess = tf.Session(config=tf.ConfigProto(
-            #     allow_soft_placement=True
-            # ))
-            # only use 1 gpu, 0 or 1
             sess = None
             if gpu_option == '1' or gpu_option == '0':
                 print("single gpu")
@@ -354,7 +354,9 @@ class MultiClassifier(object):
                 coord.request_stop()
             coord.join(threads)
             sess.close()
-
+            log.write("PREDICT B={} R={} time={}\n".format(self.B, self.R,
+                                                    predict_timer.elapsed()))
+            log.close()
             return np.concatenate(probs, axis=0)
 
     def predict(self, filename, gpu_option='0', start=0, end=None):
@@ -463,6 +465,9 @@ class MultiClassifier(object):
         P = None
         if load_probs is False:
             self.predict(filename, gpu_option=gpu_option)
+        path = "./" + "_".join((self.tag, str(self.B), str(self.R), "time")) + ".out"
+        log = open(path, 'a')
+        eval_timer = util.Timer()
         P = self.get_complete_probs()
         k = self.num_classes
         num_test = P[0].shape[0]
@@ -485,3 +490,8 @@ class MultiClassifier(object):
             correct += fut.result()
 
         print("total accuracy is", str(correct / num_test))
+
+        log.write("EVALUATE B={} R={} time={}\n".format(self.B, self.R,
+                                                eval_timer.elapsed()))
+        log.write("ACCURACY={}\n".format(correct / num_test))
+        log.close()

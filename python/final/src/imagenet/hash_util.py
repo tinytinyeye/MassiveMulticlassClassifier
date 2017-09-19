@@ -62,12 +62,20 @@ class HashGenerator(object):
         returns:
         a, b - hash parameters
         """
+        print("in get hash params")
         a, b = self.generate_ab(R)
+        print(a)
+        print(b)
         y = np.array(list(range(num_labels)))
+        print(len(y))
         for i in range(R):
             y_hash = hash_vector(y, a[i], b[i], B, self.p)
+            print("in model", i)
+            print("y_hash unique is", len(np.unique(y_hash)))
+            print("B is", B)
             # hash function may lead to less than B categories
             while len(np.unique(y_hash)) != B:
+                print("hash failed, rehashing")
                 tmp_a = self.get_a()
                 tmp_b = self.get_b()
                 while tmp_a in a:
@@ -77,4 +85,5 @@ class HashGenerator(object):
                 a[i] = tmp_a
                 b[i] = tmp_b
                 y_hash = hash_vector(y, a[i], b[i], B, self.p)
+            # print("in model %d the number of unique labels after hash is %d" % (i, len(np.unique(y_hash))))
         return a, b

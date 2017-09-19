@@ -1,7 +1,7 @@
 from sparse_multiclf import *
 import sys
 
-NUM_FEATURES = 262144
+NUM_FEATURES = 10491193
 NUM_CLASSES = 80001
 
 def main():

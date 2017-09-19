@@ -37,6 +37,9 @@ def main():
                           )
     clf.train("./data/tfrecords/training.tfrecords", gpu_option=gpu_option,
                                                         start=start, end=end)
+    # clf.predict("./data/tfrecords/test.tfrecords")
+    # y_test = np.load("./data/y_test.npy")
+    # clf.evaluate(y_test)
     clf.evaluate("./data/tfrecords/testing.tfrecords", gpu_option=gpu_option)
     sys.exit()
 

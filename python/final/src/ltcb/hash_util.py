@@ -78,4 +78,5 @@ class HashGenerator(object):
                 a[i] = tmp_a
                 b[i] = tmp_b
                 y_hash = hash_vector(y, a[i], b[i], B, self.p)
+            # print("in model %d the number of unique labels after hash is %d" % (i, len(np.unique(y_hash))))
         return a, b
