@@ -274,8 +274,8 @@ class MultiClassifier(object):
                   else:
                       stabilized_steps += 1
                   # manually set early stop value
-                  if stabilized_steps > STOP_THR and abs(loss_ - min_loss) < 10 * THR:
-                      break
+                #   if stabilized_steps > STOP_THR and abs(loss_ - min_loss) < 10 * THR:
+                #       break
                   if step % 100 == 0:
                       print('step:', step,
                             'train precision@1:', accuracy_,
